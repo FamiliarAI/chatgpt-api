@@ -309,13 +309,13 @@ export class ChatGPTAPI {
   }
 
   async sendMessages(
-    messages: Array<types.ChatMessage>,
+    messages: Array<types.BaseChatMessage>,
     opts: types.SendMessageOptions = {}
   ): Promise<types.ChatMessage> {
     if (messages.length === 0) {
       throw new Error('No messages provided')
     }
-
+    console.log('### sendMessages :', messages)
     const lastMessage = messages[messages.length - 1]
     const response = await this.sendMessage(lastMessage.text, opts)
     return response

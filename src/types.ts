@@ -59,6 +59,12 @@ export type SendMessageBrowserOptions = {
   abortSignal?: AbortSignal
 }
 
+export interface BaseChatMessage {
+  text: string
+  role: Role
+  name?: string
+}
+
 export interface ChatMessage {
   id: string
   text: string

@@ -328,6 +328,7 @@ Current date: ${currentDate}`;
     if (messages.length === 0) {
       throw new Error("No messages provided");
     }
+    console.log("### sendMessages :", messages);
     const lastMessage = messages[messages.length - 1];
     const response = await this.sendMessage(lastMessage.text, opts);
     return response;

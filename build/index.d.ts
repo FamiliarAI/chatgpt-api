@@ -41,6 +41,11 @@ type SendMessageBrowserOptions = {
     onProgress?: (partialResponse: ChatMessage) => void;
     abortSignal?: AbortSignal;
 };
+interface BaseChatMessage {
+    text: string;
+    role: Role;
+    name?: string;
+}
 interface ChatMessage {
     id: string;
     text: string;
@@ -435,7 +440,7 @@ declare class ChatGPTAPI {
      * @returns The response from ChatGPT
      */
     sendMessage(text: string, opts?: SendMessageOptions): Promise<ChatMessage>;
-    sendMessages(messages: Array<ChatMessage>, opts?: SendMessageOptions): Promise<ChatMessage>;
+    sendMessages(messages: Array<BaseChatMessage>, opts?: SendMessageOptions): Promise<ChatMessage>;
     get apiKey(): string;
     set apiKey(apiKey: string);
     protected _buildMessages(text: string, opts: SendMessageOptions): Promise<{
@@ -498,4 +503,4 @@ declare class ChatGPTUnofficialProxyAPI {
     sendMessage(text: string, opts?: SendMessageBrowserOptions): Promise<ChatMessage>;
 }
 
-export { ChatGPTAPI, ChatGPTAPIOptions, ChatGPTError, ChatGPTUnofficialProxyAPI, ChatMessage, ContentType, ConversationJSONBody, ConversationResponseEvent, FetchFn, GetMessageByIdFunction, Message, MessageActionType, MessageContent, MessageMetadata, Prompt, PromptContent, Role, SendMessageBrowserOptions, SendMessageOptions, UpsertMessageFunction, openai };
+export { BaseChatMessage, ChatGPTAPI, ChatGPTAPIOptions, ChatGPTError, ChatGPTUnofficialProxyAPI, ChatMessage, ContentType, ConversationJSONBody, ConversationResponseEvent, FetchFn, GetMessageByIdFunction, Message, MessageActionType, MessageContent, MessageMetadata, Prompt, PromptContent, Role, SendMessageBrowserOptions, SendMessageOptions, UpsertMessageFunction, openai };
