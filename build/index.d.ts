@@ -435,6 +435,7 @@ declare class ChatGPTAPI {
      * @returns The response from ChatGPT
      */
     sendMessage(text: string, opts?: SendMessageOptions): Promise<ChatMessage>;
+    sendMessages(messages: Array<ChatMessage>, opts?: SendMessageOptions): Promise<ChatMessage>;
     get apiKey(): string;
     set apiKey(apiKey: string);
     protected _buildMessages(text: string, opts: SendMessageOptions): Promise<{
