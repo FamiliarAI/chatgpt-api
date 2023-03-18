@@ -183,7 +183,8 @@ Current date: ${currentDate}`;
       stream = onProgress ? true : false,
       completionParams
     } = opts;
-    console.log("### sendMessage", text, opts);
+    console.log("### sendMessage.test:", text);
+    console.log("### sendMessage.opts:", opts);
     let { abortSignal } = opts;
     let abortController = null;
     if (timeoutMs && !abortSignal) {
@@ -329,7 +330,7 @@ Current date: ${currentDate}`;
     if (messages.length === 0) {
       throw new Error("No messages provided");
     }
-    console.log("### sendMessages :", messages);
+    console.log("### sendMessages.messages :", messages);
     for (let i = 0; i < messages.length - 1; i++) {
       const baseMessage = messages[i];
       const message = {
@@ -351,7 +352,9 @@ Current date: ${currentDate}`;
   }
   async _buildMessages(text, opts) {
     const { systemMessage = this._systemMessage } = opts;
+    console.log("_buildMessages.systemMessage :", systemMessage);
     let { parentMessageId } = opts;
+    console.log("_buildMessages.parentMessageId :", parentMessageId);
     const userLabel = USER_LABEL_DEFAULT;
     const assistantLabel = ASSISTANT_LABEL_DEFAULT;
     const maxNumTokens = this._maxModelTokens - this._maxResponseTokens;
