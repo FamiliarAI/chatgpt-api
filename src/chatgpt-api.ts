@@ -142,8 +142,8 @@ export class ChatGPTAPI {
       completionParams
     } = opts
 
-    console.log('### sendMessage.test:', text)
-    console.log('### sendMessage.opts:', opts)
+    console.log('### sendMessage.test:4', text)
+    console.log('### sendMessage.opts:5', opts)
 
     let { abortSignal } = opts
 
@@ -159,6 +159,7 @@ export class ChatGPTAPI {
       parentMessageId,
       text
     }
+    console.log('### sendMessage.message: user6', message)
     await this._upsertMessage(message)
 
     const { messages, maxTokens, numTokens } = await this._buildMessages(
