@@ -183,8 +183,10 @@ Current date: ${currentDate}`;
       stream = onProgress ? true : false,
       completionParams
     } = opts;
-    console.log("### sendMessage.test:", text);
-    console.log("### sendMessage.opts:", opts);
+    if (this._debug) {
+      console.log("### sendMessage.test:", text);
+      console.log("### sendMessage.opts:", opts);
+    }
     let { abortSignal } = opts;
     let abortController = null;
     if (timeoutMs && !abortSignal) {
@@ -197,7 +199,9 @@ Current date: ${currentDate}`;
       parentMessageId,
       text
     };
-    console.log("### sendMessage.message: user", message);
+    if (this._debug) {
+      console.log("### sendMessage.message: user", message);
+    }
     await this._upsertMessage(message);
     const { messages, maxTokens, numTokens } = await this._buildMessages(
       text,
@@ -324,6 +328,9 @@ Current date: ${currentDate}`;
         message: "OpenAI timed out waiting for response"
       });
     } else {
+      if (this._debug) {
+        console.log("### sendMessage.responseP:", responseP);
+      }
       return responseP;
     }
   }
@@ -331,14 +338,18 @@ Current date: ${currentDate}`;
     if (messages.length === 0) {
       throw new Error("No messages provided");
     }
-    console.log("### sendMessages.messages :", messages);
-    console.log("### sendMessages.opts 1:", opts);
+    if (this._debug) {
+      console.log("### sendMessages.messages :", messages);
+      console.log("### sendMessages.opts 1:", opts);
+    }
     let startIndex = 0;
     if (messages[0].role === "system") {
       opts.systemMessage = messages[0].text;
       startIndex = 1;
     }
-    console.log("### sendMessages.opts 2:", opts);
+    if (this._debug) {
+      console.log("### sendMessages.opts 2:", opts);
+    }
     let previousMessageId;
     for (let i = startIndex; i < messages.length - 1; i++) {
       const baseMessage = messages[i];
@@ -350,7 +361,9 @@ Current date: ${currentDate}`;
         parentMessageId: previousMessageId
       };
       await this._upsertMessage(message);
-      console.log("### sendMessages.messageStore :", this._messageStore);
+      if (this._debug) {
+        console.log("### sendMessages.messageStore :", this._messageStore);
+      }
       previousMessageId = message.id;
     }
     opts.parentMessageId = previousMessageId;
@@ -366,9 +379,11 @@ Current date: ${currentDate}`;
   }
   async _buildMessages(text, opts) {
     const { systemMessage = this._systemMessage } = opts;
-    console.log("_buildMessages.systemMessage :", systemMessage);
     let { parentMessageId } = opts;
-    console.log("_buildMessages.parentMessageId :", parentMessageId);
+    if (this._debug) {
+      console.log("### _buildMessages.systemMessage :", systemMessage);
+      console.log("### _buildMessages.parentMessageId :", parentMessageId);
+    }
     const userLabel = USER_LABEL_DEFAULT;
     const assistantLabel = ASSISTANT_LABEL_DEFAULT;
     const maxNumTokens = this._maxModelTokens - this._maxResponseTokens;

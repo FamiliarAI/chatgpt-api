@@ -142,8 +142,10 @@ export class ChatGPTAPI {
       completionParams
     } = opts
 
-    console.log('### sendMessage.test:', text)
-    console.log('### sendMessage.opts:', opts)
+    if (this._debug) {
+      console.log('### sendMessage.test:', text)
+      console.log('### sendMessage.opts:', opts)
+    }
 
     let { abortSignal } = opts
 
@@ -159,7 +161,10 @@ export class ChatGPTAPI {
       parentMessageId,
       text
     }
-    console.log('### sendMessage.message: user', message)
+    if (this._debug) {
+      console.log('### sendMessage.message: user', message)
+    }
+
     await this._upsertMessage(message)
     // buildMessages does not seem to do anything to mesesage store
     const { messages, maxTokens, numTokens } = await this._buildMessages(
@@ -308,6 +313,9 @@ export class ChatGPTAPI {
         message: 'OpenAI timed out waiting for response'
       })
     } else {
+      if (this._debug) {
+        console.log('### sendMessage.responseP:', responseP)
+      }
       return responseP
     }
   }
@@ -319,9 +327,11 @@ export class ChatGPTAPI {
     if (messages.length === 0) {
       throw new Error('No messages provided')
     }
-    console.log('### sendMessages.messages :', messages)
-    console.log('### sendMessages.opts 1:', opts)
 
+    if (this._debug) {
+      console.log('### sendMessages.messages :', messages)
+      console.log('### sendMessages.opts 1:', opts)
+    }
     let startIndex = 0
 
     // Check if the first message has role: 'system'
@@ -331,7 +341,10 @@ export class ChatGPTAPI {
       // Discard the message by changing the startIndex
       startIndex = 1
     }
-    console.log('### sendMessages.opts 2:', opts)
+
+    if (this._debug) {
+      console.log('### sendMessages.opts 2:', opts)
+    }
 
     let previousMessageId: string | undefined
 
@@ -347,7 +360,10 @@ export class ChatGPTAPI {
       }
       // Upsert the message
       await this._upsertMessage(message)
-      console.log('### sendMessages.messageStore :', this._messageStore)
+      if (this._debug) {
+        console.log('### sendMessages.messageStore :', this._messageStore)
+      }
+
       // Set the previousMessageId for the next message
       previousMessageId = message.id
     }
@@ -370,9 +386,12 @@ export class ChatGPTAPI {
 
   protected async _buildMessages(text: string, opts: types.SendMessageOptions) {
     const { systemMessage = this._systemMessage } = opts
-    console.log('_buildMessages.systemMessage :', systemMessage)
     let { parentMessageId } = opts
-    console.log('_buildMessages.parentMessageId :', parentMessageId)
+
+    if (this._debug) {
+      console.log('### _buildMessages.systemMessage :', systemMessage)
+      console.log('### _buildMessages.parentMessageId :', parentMessageId)
+    }
 
     const userLabel = USER_LABEL_DEFAULT
     const assistantLabel = ASSISTANT_LABEL_DEFAULT
