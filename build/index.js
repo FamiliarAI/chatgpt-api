@@ -183,8 +183,8 @@ Current date: ${currentDate}`;
       stream = onProgress ? true : false,
       completionParams
     } = opts;
-    console.log("### sendMessage.test:4", text);
-    console.log("### sendMessage.opts:5", opts);
+    console.log("### sendMessage.test:", text);
+    console.log("### sendMessage.opts:", opts);
     let { abortSignal } = opts;
     let abortController = null;
     if (timeoutMs && !abortSignal) {
@@ -197,7 +197,7 @@ Current date: ${currentDate}`;
       parentMessageId,
       text
     };
-    console.log("### sendMessage.message: user6", message);
+    console.log("### sendMessage.message: user", message);
     await this._upsertMessage(message);
     const { messages, maxTokens, numTokens } = await this._buildMessages(
       text,
@@ -332,14 +332,26 @@ Current date: ${currentDate}`;
       throw new Error("No messages provided");
     }
     console.log("### sendMessages.messages :", messages);
-    for (let i = 0; i < messages.length - 1; i++) {
+    console.log("### sendMessages.opts 1:", opts);
+    let startIndex = 0;
+    if (messages[0].role === "system") {
+      opts.systemMessage = messages[0].text;
+      startIndex = 1;
+    }
+    console.log("### sendMessages.opts 2:", opts);
+    let previousMessageId;
+    for (let i = startIndex; i < messages.length - 1; i++) {
       const baseMessage = messages[i];
       const message = {
         id: uuidv4(),
         role: baseMessage.role,
         text: baseMessage.text,
-        name: baseMessage.name
+        name: baseMessage.name,
+        parentMessageId: previousMessageId
       };
+      await this._upsertMessage(message);
+      console.log("### sendMessages.messageStore :", this._messageStore);
+      previousMessageId = message.id;
     }
     const lastMessage = messages[messages.length - 1];
     const response = await this.sendMessage(lastMessage.text, opts);

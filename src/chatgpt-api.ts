@@ -142,8 +142,8 @@ export class ChatGPTAPI {
       completionParams
     } = opts
 
-    console.log('### sendMessage.test:4', text)
-    console.log('### sendMessage.opts:5', opts)
+    console.log('### sendMessage.test:', text)
+    console.log('### sendMessage.opts:', opts)
 
     let { abortSignal } = opts
 
@@ -159,7 +159,7 @@ export class ChatGPTAPI {
       parentMessageId,
       text
     }
-    console.log('### sendMessage.message: user6', message)
+    console.log('### sendMessage.message: user', message)
     await this._upsertMessage(message)
 
     const { messages, maxTokens, numTokens } = await this._buildMessages(
@@ -320,16 +320,39 @@ export class ChatGPTAPI {
       throw new Error('No messages provided')
     }
     console.log('### sendMessages.messages :', messages)
-    for (let i = 0; i < messages.length - 1; i++) {
+    console.log('### sendMessages.opts 1:', opts)
+
+    let startIndex = 0
+
+    // Check if the first message has role: 'system'
+    if (messages[0].role === 'system') {
+      // Set the systemMessage in opts to the content in the message
+      opts.systemMessage = messages[0].text
+      // Discard the message by changing the startIndex
+      startIndex = 1
+    }
+    console.log('### sendMessages.opts 2:', opts)
+
+    let previousMessageId: string | undefined
+
+    // Iterate over messages except the last one
+    for (let i = startIndex; i < messages.length - 1; i++) {
       const baseMessage = messages[i]
       const message: types.ChatMessage = {
         id: uuidv4(),
         role: baseMessage.role,
         text: baseMessage.text,
-        name: baseMessage.name
+        name: baseMessage.name,
+        parentMessageId: previousMessageId
       }
+      // Upsert the message
+      await this._upsertMessage(message)
+      console.log('### sendMessages.messageStore :', this._messageStore)
+      // Set the previousMessageId for the next message
+      previousMessageId = message.id
     }
 
+    // Send the last message using the sendMessage method
     const lastMessage = messages[messages.length - 1]
     const response = await this.sendMessage(lastMessage.text, opts)
     return response
