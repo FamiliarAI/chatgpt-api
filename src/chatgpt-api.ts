@@ -308,6 +308,19 @@ export class ChatGPTAPI {
     }
   }
 
+  async sendMessages(
+    messages: Array<types.ChatMessage>,
+    opts: types.SendMessageOptions = {}
+  ): Promise<types.ChatMessage> {
+    if (messages.length === 0) {
+      throw new Error('No messages provided')
+    }
+
+    const lastMessage = messages[messages.length - 1]
+    const response = await this.sendMessage(lastMessage.text, opts)
+    return response
+  }
+
   get apiKey(): string {
     return this._apiKey
   }
