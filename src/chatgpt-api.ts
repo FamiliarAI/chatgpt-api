@@ -161,7 +161,7 @@ export class ChatGPTAPI {
     }
     console.log('### sendMessage.message: user', message)
     await this._upsertMessage(message)
-
+    // buildMessages does not seem to do anything to mesesage store
     const { messages, maxTokens, numTokens } = await this._buildMessages(
       text,
       opts
@@ -352,6 +352,8 @@ export class ChatGPTAPI {
       previousMessageId = message.id
     }
 
+    // Set the parentMessageId in opts to the previousMessageId
+    opts.parentMessageId = previousMessageId
     // Send the last message using the sendMessage method
     const lastMessage = messages[messages.length - 1]
     const response = await this.sendMessage(lastMessage.text, opts)

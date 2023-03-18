@@ -353,6 +353,7 @@ Current date: ${currentDate}`;
       console.log("### sendMessages.messageStore :", this._messageStore);
       previousMessageId = message.id;
     }
+    opts.parentMessageId = previousMessageId;
     const lastMessage = messages[messages.length - 1];
     const response = await this.sendMessage(lastMessage.text, opts);
     return response;
