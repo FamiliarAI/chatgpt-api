@@ -183,6 +183,7 @@ Current date: ${currentDate}`;
       stream = onProgress ? true : false,
       completionParams
     } = opts;
+    console.log("### sendMessage", text, opts);
     let { abortSignal } = opts;
     let abortController = null;
     if (timeoutMs && !abortSignal) {
@@ -329,6 +330,15 @@ Current date: ${currentDate}`;
       throw new Error("No messages provided");
     }
     console.log("### sendMessages :", messages);
+    for (let i = 0; i < messages.length - 1; i++) {
+      const baseMessage = messages[i];
+      const message = {
+        id: uuidv4(),
+        role: baseMessage.role,
+        text: baseMessage.text,
+        name: baseMessage.name
+      };
+    }
     const lastMessage = messages[messages.length - 1];
     const response = await this.sendMessage(lastMessage.text, opts);
     return response;
